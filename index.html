@@ -47,9 +47,12 @@
        FORZAR MODO CLARO
        ============================== */
         @media (prefers-color-scheme: dark) {
-            body, header, main, footer, article, div {
-                background-color: #F8FAFC !important;
-                color: #1E293B !important;
+            header {
+                background-color: #FFFFFF !important; /* Fondo blanco */
+                color: #1E293B !important; /* Texto negro / slate-800 */
+            }
+            header p, header h1, header div {
+                color: inherit !important;
             }
         }
     </style>
