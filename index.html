@@ -19,6 +19,10 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
         
+        .centrado {
+            display: flex;
+            align-items: center;
+        }
         /* Ajustes finos para la vista móvil */
         .product-image-mobile {
             width: 110px;
@@ -87,8 +91,8 @@
 
     <!-- 4. PIE DE PÁGINA -->
     <footer class="text-center text-slate-400 text-xs py-8 mt-4 border-t">
-        <p>&copy; 2024 Bombonera CIX. Todos los derechos reservados.</p>
-        <p class="mt-1">Chiclayo, Perú</p>
+        <p>&copy; 2025 Bombonera CIX - Chiclayo - La Victoria</p>
+        <!-- <p class="mt-1">Chiclayo, Perú</p> -->
     </footer>
 
     <!-- LÓGICA DE LA APLICACIÓN -->
@@ -101,7 +105,7 @@
         // Puedes usar una imagen subida a imgur, tu hosting, o drive público.
         // Por ahora uso un placeholder profesional.
         const BRAND_CONFIG = {
-            logoUrl: "https://img.icons8.com/color/144/hamburger.png", // <--- PON TU LOGO AQUÍ
+            logoUrl: "assets/logo_bomboneracix.jpeg", // <--- PON TU LOGO AQUÍ
             whatsappNumber: "51943221586",
             currency: "S/"
         };
@@ -114,63 +118,63 @@
                 name: "Broaster Clásico",
                 price: 10.00,
                 desc: "Pollo crujiente, papas doradas, ensalada fresca y cremas.",
-                image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=800&auto=format&fit=crop"
+                image: "assets/broaster.png"
             },
             {
                 id: 2,
                 name: "Salchipollo",
                 price: 8.00,
                 desc: "Trozos de pollo broaster con hot dog y papas fritas.",
-                image: "https://images.unsplash.com/photo-1562967960-f0d870857508?q=80&w=800&auto=format&fit=crop"
+                image: "assets/salchipollo.png"
             },
             {
                 id: 3,
                 name: "Salchipapa",
                 price: 7.00,
                 desc: "La clásica: abundante papa amarilla y hot dog frito.",
-                image: "https://images.unsplash.com/photo-1585325701165-351af916e581?q=80&w=800&auto=format&fit=crop"
+                image: "assets/salchipapa.png"
             },
             {
                 id: 4,
                 name: "Hamburguesa de Pollo",
                 price: 4.00,
                 desc: "Pollo deshilachado con aderezo de la casa y papas al hilo.",
-                image: "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?q=80&w=800&auto=format&fit=crop"
+                image: "assets/hamburguesa-pollo-desilachado.png"
             },
             {
                 id: 5,
                 name: "Hamburguesa Filete",
                 price: 4.50,
                 desc: "Filete de pechuga a la plancha, lechuga y tomate.",
-                image: "https://images.unsplash.com/photo-1607532941433-304659e8198a?q=80&w=800&auto=format&fit=crop"
+                image: "assets/hamburguesa-filete-pollo.png"
             },
             {
                 id: 6,
                 name: "Hamburguesa de Carne",
                 price: 5.00,
                 desc: "Carne artesanal, tomate, lechuga y salsas.",
-                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop"
+                image: "assets/hamburguesa-carne.png"
             },
             {
                 id: 7,
                 name: "Hamburguesa A lo Pobre",
                 price: 8.00,
                 desc: "Carne, huevo frito, plátano frito y papas.",
-                image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop"
+                image: "assets/hamburguesa-a-lo-pobre.png"
             },
             {
                 id: 8,
                 name: "Hamburguesa Hawaiana",
                 price: 10.00,
                 desc: "Carne, queso derretido, jamón y piña grillada.",
-                image: "https://images.unsplash.com/photo-1525164286253-04e68b9d94c6?q=80&w=800&auto=format&fit=crop"
+                image: "assets/hamburguesa-hawaiana.png"
             },
             {
                 id: 9,
                 name: "Alitas BBQ / Picantes",
                 price: 10.00,
                 desc: "6 alitas bañadas en salsa a elección con papas.",
-                image: "https://images.unsplash.com/photo-1527477396000-6489b5f935d2?q=80&w=800&auto=format&fit=crop"
+                image: "assets/alitas.png"
             }
         ];
 
@@ -217,7 +221,7 @@
                     
                     <!-- IMAGEN -->
                     <!-- Mobile: Tamaño fijo a la izquierda. Desktop: Ancho completo arriba -->
-                    <div class="relative">
+                    <div class="relative centrado">
                         <img 
                             src="${product.image}" 
                             alt="${product.name}" 
