@@ -96,39 +96,47 @@
         }
         /* Botones de navegación de tabs */
         .nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 50%;
+            background: #FEE2E2; /* Rojo suave cuando está desactivado */
+            border: 1px solid #FCA5A5;
+            border-radius: 8px;
             width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            z-index: 10;
             transition: all 0.2s;
+            flex-shrink: 0;
+            margin-bottom: 10px;
         }
-        .nav-button:hover {
-            background: #F8FAFC;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .nav-button:hover:not(.disabled) {
+            background: #B91C1C;
         }
-        .nav-button.hidden {
-            display: none;
+        .nav-button.active {
+            background: #DC2626; /* Rojo fuerte cuando está activo */
+            cursor: pointer;
         }
-        .nav-button-left {
-            left: 0;
+        .nav-button.disabled {
+            background: #FEE2E2; /* Rojo suave cuando está desactivado */
+            cursor: not-allowed;
+            opacity: 0.6;
         }
-        .nav-button-right {
-            right: 0;
+        .nav-button.active i {
+            color: white;
+        }
+        .nav-button.disabled i {
+            color: #FCA5A5;
         }
         @media (min-width: 1024px) {
             .nav-button {
                 display: none;
             }
+        }
+
+        /* Padding para las categorías cuando hay botones visibles */
+        #category-tabs-wrapper {
+            padding-left: 0;
+            padding-right: 0;
         }
     </style>
 </head>
@@ -162,17 +170,19 @@
         </div>
 
         <!-- TABS DE CATEGORÍAS -->
-        <div class="mb-6 relative">
-            <button id="nav-left" class="nav-button nav-button-left hidden" onclick="scrollTabs('left')">
-                <i class="ph-bold ph-caret-left text-slate-600"></i>
-            </button>
-            <button id="nav-right" class="nav-button nav-button-right" onclick="scrollTabs('right')">
-                <i class="ph-bold ph-caret-right text-slate-600"></i>
-            </button>
-            <div id="category-tabs-wrapper" class="overflow-x-auto">
-                <div id="category-tabs" class="flex gap-2 pb-2">
-                    <!-- Los tabs se insertan aquí vía JavaScript -->
+        <div class="mb-6">
+            <div class="flex gap-2 items-center lg:block">
+                <button id="nav-left" class="nav-button disabled" onclick="scrollTabs('left')">
+                    <i class="ph-bold ph-caret-left"></i>
+                </button>
+                <div id="category-tabs-wrapper" class="overflow-x-auto flex-1">
+                    <div id="category-tabs" class="flex gap-2 pb-2">
+                        <!-- Los tabs se insertan aquí vía JavaScript -->
+                    </div>
                 </div>
+                <button id="nav-right" class="nav-button active" onclick="scrollTabs('right')">
+                    <i class="ph-bold ph-caret-right"></i>
+                </button>
             </div>
         </div>
 
@@ -484,18 +494,35 @@
             const navLeft = document.getElementById('nav-left');
             const navRight = document.getElementById('nav-right');
             
-            // Mostrar/ocultar botón izquierdo
-            if (wrapper.scrollLeft <= 0) {
-                navLeft.classList.add('hidden');
-            } else {
-                navLeft.classList.remove('hidden');
+            // Verificar si hay scroll disponible
+            const hasScroll = wrapper.scrollWidth > wrapper.clientWidth;
+            
+            if (!hasScroll) {
+                // Si no hay scroll, desactivar ambos botones
+                navLeft.classList.add('disabled');
+                navLeft.classList.remove('active');
+                navRight.classList.add('disabled');
+                navRight.classList.remove('active');
+                return;
             }
             
-            // Mostrar/ocultar botón derecho
-            if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 5) {
-                navRight.classList.add('hidden');
+            // Actualizar botón izquierdo
+            if (wrapper.scrollLeft <= 5) {
+                navLeft.classList.add('disabled');
+                navLeft.classList.remove('active');
             } else {
-                navRight.classList.remove('hidden');
+                navLeft.classList.remove('disabled');
+                navLeft.classList.add('active');
+            }
+            
+            // Actualizar botón derecho
+            const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+            if (wrapper.scrollLeft >= maxScroll - 5) {
+                navRight.classList.add('disabled');
+                navRight.classList.remove('active');
+            } else {
+                navRight.classList.remove('disabled');
+                navRight.classList.add('active');
             }
         }
 
@@ -508,8 +535,8 @@
             const wrapper = document.getElementById('category-tabs-wrapper');
             wrapper.addEventListener('scroll', updateNavButtons);
             
-            // Verificar estado inicial
-            setTimeout(updateNavButtons, 100);
+            // Verificar estado inicial después de que se rendericen los tabs
+            setTimeout(updateNavButtons, 200);
         });
 
         function renderHeader() {
