@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bombonera CIX | Carta Digital</title>
-    <meta name="description" content="Pide lo mejor en Broasters, Salchipapas y Hamburguesas en Chiclayo.">
+    <meta name="description" content="Pide lo mejor en Hamburguesas, Combos, Alitas y Salchipapas en Chiclayo.">
     
     <!-- Tailwind CSS (Estilos Modernos y Ligeros) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,17 +43,56 @@
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Tabs de categorías */
+        .category-tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .category-tab.active {
+            background-color: #DC2626;
+            color: white;
+        }
+
         /* ==============================
        FORZAR MODO CLARO
        ============================== */
         @media (prefers-color-scheme: dark) {
             header {
-                background-color: #FFFFFF !important; /* Fondo blanco */
-                color: #1E293B !important; /* Texto negro / slate-800 */
+                background-color: #FFFFFF !important;
+                color: #1E293B !important;
             }
             header p, header h1, header div {
                 color: inherit !important;
             }
+        }
+
+        /* Estilos para productos sin botón */
+        .product-list-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        .product-list-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Tabs de categorías */
+        .category-tab {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .category-tab.active {
+            background-color: #DC2626;
+            color: white;
+        }
+        .category-tab.active:hover {
+            background-color: #B91C1C;
+            color: white;
+        }
+        .category-tab:not(.active):hover {
+            background-color: #FEE2E2;
+            color: #DC2626;
         }
     </style>
 </head>
@@ -86,6 +125,13 @@
             <p class="text-sm text-slate-500">Selecciona tu favorito y pide por WhatsApp</p>
         </div>
 
+        <!-- TABS DE CATEGORÍAS -->
+        <div class="mb-6 overflow-x-auto">
+            <div id="category-tabs" class="flex gap-2 pb-2">
+                <!-- Los tabs se insertan aquí vía JavaScript -->
+            </div>
+        </div>
+
         <!-- 
            GRID RESPONSIVE INTELIGENTE:
            - Móvil/Tablet (Default): grid-cols-1 (Lista vertical)
@@ -105,7 +151,6 @@
     <!-- 4. PIE DE PÁGINA -->
     <footer class="text-center text-slate-400 text-xs py-8 mt-4 border-t">
         <p>&copy; 2025 Bombonera CIX - Chiclayo - La Victoria</p>
-        <!-- <p class="mt-1">Chiclayo, Perú</p> -->
     </footer>
 
     <!-- LÓGICA DE LA APLICACIÓN -->
@@ -114,82 +159,264 @@
         // CONFIGURACIÓN (EDITA AQUÍ TUS DATOS)
         // ==========================================
         
-        // REEMPLAZA ESTA URL CON LA URL DE TU LOGO REAL
-        // Puedes usar una imagen subida a imgur, tu hosting, o drive público.
-        // Por ahora uso un placeholder profesional.
         const BRAND_CONFIG = {
-            logoUrl: "assets/logo_bomboneracix.jpeg", // <--- PON TU LOGO AQUÍ
-            whatsappNumber: "51943221586",
+            logoUrl: "assets/logo_bomboneracix.jpeg",
+            whatsappNumber: "51975076238",
             currency: "S/"
         };
 
+        // CATEGORÍAS
+        const categories = [
+            { id: 'all', name: 'TODO', emoji: '' },
+            { id: 'hamburguesas', name: 'HAMBURGUESAS', emoji: '🍔' },
+            { id: 'combos', name: 'COMBOS ESPECIALES', emoji: '🍗' },
+            { id: 'alitas', name: 'ALITAS', emoji: '🔥' },
+            { id: 'salchipapas', name: 'SALCHIPAPAS', emoji: '🌭' },
+            { id: 'cremas', name: 'CREMAS', emoji: '🥣' },
+            { id: 'agregados', name: 'AGREGADOS', emoji: '➕' }
+        ];
+
+        // ICONOS PARA CADA CATEGORÍA
+        const categoryIcons = {
+            hamburguesas: '🍔',
+            combos: '🍗',
+            alitas: '🔥',
+            salchipapas: '🌭',
+            cremas: '🥣',
+            agregados: '➕'
+        };
+
         // LISTA DE PRODUCTOS
-        // Las imágenes son referenciales de alta calidad (Unsplash/Pexels)
         const products = [
+            // HAMBURGUESAS
             {
                 id: 1,
-                name: "Broaster Clásico",
-                price: 10.00,
-                desc: "Pollo crujiente, papas doradas, ensalada fresca y cremas.",
-                image: "assets/broaster.png"
+                name: "La goleadora",
+                price: 5.00,
+                desc: "Pollo deshilachado + papas + ensalada + cremas",
+                category: "hamburguesas"
             },
             {
                 id: 2,
-                name: "Salchipollo",
-                price: 8.00,
-                desc: "Trozos de pollo broaster con hot dog y papas fritas.",
-                image: "assets/salchipollo.png"
+                name: "La campeona",
+                price: 7.00,
+                desc: "Carne artesanal + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 3,
-                name: "Salchipapa",
-                price: 7.00,
-                desc: "La clásica: abundante papa amarilla y hot dog frito.",
-                image: "assets/salchipapa.png"
+                name: "El balón de oro",
+                price: 7.50,
+                desc: "Chorizo + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 4,
-                name: "Hamburguesa de Pollo",
-                price: 4.00,
-                desc: "Pollo deshilachado con aderezo de la casa y papas al hilo.",
-                image: "assets/hamburguesa-pollo-desilachado.png"
+                name: "La penaltiburguer",
+                price: 8.00,
+                desc: "Carne o pollo + plátano + huevo + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 5,
-                name: "Hamburguesa Filete",
-                price: 4.50,
-                desc: "Filete de pechuga a la plancha, lechuga y tomate.",
-                image: "assets/hamburguesa-filete-pollo.png"
+                name: "La liga burguer",
+                price: 10.00,
+                desc: "Carne o pollo + piña + queso + hot dog + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 6,
-                name: "Hamburguesa de Carne",
-                price: 5.00,
-                desc: "Carne artesanal, tomate, lechuga y salsas.",
-                image: "assets/hamburguesa-carne.png"
+                name: "La rompe redes",
+                price: 10.00,
+                desc: "Carne o pollo + chorizo + huevo + queso + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 7,
-                name: "Hamburguesa A lo Pobre",
-                price: 8.00,
-                desc: "Carne, huevo frito, plátano frito y papas.",
-                image: "assets/hamburguesa-a-lo-pobre.png"
+                name: "La bombonera",
+                price: 12.00,
+                desc: "Filete de pollo broaster + huevo + queso + hot dog + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 8,
-                name: "Hamburguesa Hawaiana",
-                price: 10.00,
-                desc: "Carne, queso derretido, jamón y piña grillada.",
-                image: "assets/hamburguesa-hawaiana.png"
+                name: "La crack burguer",
+                price: 11.00,
+                desc: "Carne + pollo + queso + huevo + papas + cremas + ensalada",
+                category: "hamburguesas"
             },
             {
                 id: 9,
-                name: "Alitas BBQ / Picantes",
+                name: "La 90+3' (Tiempo extra)",
+                price: 12.00,
+                desc: "Carne o pollo + plátano + huevo + chorizo + queso + papas + cremas + ensalada",
+                category: "hamburguesas"
+            },
+            {
+                id: 10,
+                name: "La doble gol (doble carne)",
                 price: 10.00,
-                desc: "6 alitas bañadas en salsa a elección con papas.",
-                image: "assets/alitas.png"
+                desc: "Doble carne + papas + cremas + ensalada",
+                category: "hamburguesas"
+            },
+
+            // COMBOS ESPECIALES
+            {
+                id: 11,
+                name: "Combo Copa",
+                price: 13.00,
+                desc: "Alitas + hamburguesa goleadora",
+                category: "combos"
+            },
+            {
+                id: 12,
+                name: "Combo Clásico",
+                price: 17.00,
+                desc: "Broaster + alitas",
+                category: "combos"
+            },
+            {
+                id: 13,
+                name: "Combo Champions",
+                price: 22.00,
+                desc: "Alitas + hamburguesa goleadora + broaster",
+                category: "combos"
+            },
+
+            // ALITAS
+            {
+                id: 14,
+                name: "Liverpool",
+                price: 10.00,
+                desc: "Alitas bañadas en salsa BBQ",
+                category: "alitas"
+            },
+            {
+                id: 15,
+                name: "Real Madrid",
+                price: 10.00,
+                desc: "Alitas bañadas en salsa acevichada",
+                category: "alitas"
+            },
+            {
+                id: 16,
+                name: "El Boca",
+                price: 10.00,
+                desc: "Alitas bañadas en salsa de maracuyá",
+                category: "alitas"
+            },
+
+            // SALCHIPAPAS
+            {
+                id: 17,
+                name: "Salchi Gol",
+                price: 9.00,
+                desc: "Salchicha ahumada + papas + cremas + ensalada + huevo",
+                category: "salchipapas"
+            },
+            {
+                id: 18,
+                name: "Orejón",
+                price: 10.00,
+                desc: "Pollo broaster + papas + cremas + ensalada",
+                category: "salchipapas"
+            },
+            {
+                id: 19,
+                name: "Paolín Lin Lin",
+                price: 12.00,
+                desc: "Pollo broaster + chaufa + papas + cremas + ensalada",
+                category: "salchipapas"
+            },
+            {
+                id: 20,
+                name: "El Pulpo Gallese",
+                price: 16.00,
+                desc: "Pollo broaster + hot dog ahumado + chaufa + huevo + papas + cremas + ensalada",
+                category: "salchipapas"
+            },
+
+            // CREMAS
+            {
+                id: 21,
+                name: "Mayonesa",
+                category: "cremas"
+            },
+            {
+                id: 22,
+                name: "Ají",
+                category: "cremas"
+            },
+            {
+                id: 23,
+                name: "Huacatay",
+                category: "cremas"
+            },
+            {
+                id: 24,
+                name: "Aceituna",
+                category: "cremas"
+            },
+            {
+                id: 25,
+                name: "Tártara",
+                category: "cremas"
+            },
+            {
+                id: 26,
+                name: "Golf",
+                category: "cremas"
+            },
+            {
+                id: 27,
+                name: "Ketchup",
+                category: "cremas"
+            },
+            {
+                id: 28,
+                name: "Mostaza",
+                category: "cremas"
+            },
+            {
+                id: 29,
+                name: "BBQ",
+                category: "cremas"
+            },
+            {
+                id: 30,
+                name: "Palta",
+                category: "cremas"
+            },
+
+            // AGREGADOS
+            {
+                id: 31,
+                name: "Chorizo",
+                price: 2.00,
+                category: "agregados"
+            },
+            {
+                id: 32,
+                name: "Queso",
+                price: 2.00,
+                category: "agregados"
+            },
+            {
+                id: 33,
+                name: "Huevo",
+                price: 2.00,
+                category: "agregados"
+            },
+            {
+                id: 34,
+                name: "Hot dog",
+                price: 2.00,
+                category: "agregados"
             }
         ];
+
+        // Variable global para la categoría activa
+        let activeCategory = 'all';
 
         // ==========================================
         // LÓGICA DE RENDERIZADO
@@ -197,15 +424,14 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderHeader();
+            renderCategoryTabs();
             renderProducts();
         });
 
         function renderHeader() {
-            // Configurar Logo y Favicon
             const logoImg = document.getElementById('main-logo');
             logoImg.src = BRAND_CONFIG.logoUrl;
             
-            // Crear Favicon dinámicamente
             let link = document.querySelector("link[rel~='icon']");
             if (!link) {
                 link = document.createElement('link');
@@ -215,70 +441,146 @@
             link.href = BRAND_CONFIG.logoUrl;
         }
 
+        function renderCategoryTabs() {
+            const tabsContainer = document.getElementById('category-tabs');
+            
+            categories.forEach(category => {
+                const tabHTML = `
+                    <button 
+                        onclick="filterByCategory('${category.id}')" 
+                        id="tab-${category.id}"
+                        class="category-tab px-4 py-2 rounded-lg font-semibold text-sm border border-slate-200 bg-white hover:bg-slate-50 ${category.id === 'all' ? 'active' : ''}">
+                        ${category.emoji} ${category.name}
+                    </button>
+                `;
+                tabsContainer.innerHTML += tabHTML;
+            });
+        }
+
+        function filterByCategory(categoryId) {
+            activeCategory = categoryId;
+            
+            // Actualizar tabs activos
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`tab-${categoryId}`).classList.add('active');
+            
+            // Re-renderizar productos
+            renderProducts();
+        }
+
         function renderProducts() {
             const container = document.getElementById('product-container');
+            container.innerHTML = '';
             
-            products.forEach(product => {
-                // Formateo de precio
-                const formattedPrice = product.price.toFixed(2);
+            // Determinar qué categorías mostrar
+            const categoriesToShow = activeCategory === 'all' 
+                ? categories.filter(cat => cat.id !== 'all')
+                : categories.filter(cat => cat.id === activeCategory);
+            
+            // Renderizar por categoría
+            categoriesToShow.forEach(category => {
+                const categoryProducts = products.filter(p => p.category === category.id);
                 
-                // Mensaje de WhatsApp
-                const waMessage = `Hola Bombonera CIX, quisiera pedir: ${product.name} (${BRAND_CONFIG.currency} ${formattedPrice}). ¿Me confirman disponibilidad?`;
-                const waLink = `https://wa.me/${BRAND_CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
-
-                // HTML ESTRUCTURAL (RESPONSIVE)
-                // - Mobile/Tablet: flex-row (Horizontal)
-                // - Desktop (lg): flex-col (Vertical Card)
-                const cardHTML = `
-                <article class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-row lg:flex-col lg:hover:shadow-lg transition-all fade-in">
-                    
-                    <!-- IMAGEN -->
-                    <!-- Mobile: Tamaño fijo a la izquierda. Desktop: Ancho completo arriba -->
-                    <div class="relative centrado">
-                        <img 
-                            src="${product.image}" 
-                            alt="${product.name}" 
-                            class="product-image-mobile lg:w-full lg:h-56 lg:object-cover bg-slate-200"
-                            onerror="this.src='https://placehold.co/400x300?text=Sin+Imagen'"
-                        >
+                if (categoryProducts.length === 0) return;
+                
+                // TÍTULO DE CATEGORÍA
+                const titleHTML = `
+                    <div class="col-span-1 lg:col-span-3 mb-2 mt-4 first:mt-0">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <span class="text-2xl">${category.emoji}</span>
+                            ${category.name}
+                        </h3>
+                        <div class="h-1 w-20 bg-red-600 rounded-full mt-1"></div>
                     </div>
+                `;
+                container.innerHTML += titleHTML;
+                
+                // PRODUCTOS DE LA CATEGORÍA
+                categoryProducts.forEach(product => {
+                    const categoryType = product.category;
+                    
+                    // Renderizado especial para CREMAS (solo lista simple)
+                    if (categoryType === 'cremas') {
+                        const itemHTML = `
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden fade-in">
+                                <div class="product-list-item flex items-center gap-3">
+                                    <span class="text-2xl">${categoryIcons[categoryType]}</span>
+                                    <span class="text-slate-800 font-medium">${product.name}</span>
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += itemHTML;
+                        return;
+                    }
+                    
+                    // Renderizado especial para AGREGADOS (lista con precio)
+                    if (categoryType === 'agregados') {
+                        const formattedPrice = product.price.toFixed(2);
+                        const itemHTML = `
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden fade-in">
+                                <div class="product-list-item flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-2xl">${categoryIcons[categoryType]}</span>
+                                        <span class="text-slate-800 font-medium">${product.name}</span>
+                                    </div>
+                                    <span class="text-red-600 font-bold">${BRAND_CONFIG.currency} ${formattedPrice}</span>
+                                </div>
+                            </div>
+                        `;
+                        container.innerHTML += itemHTML;
+                        return;
+                    }
+                    
+                    // Renderizado para productos con botón (hamburguesas, combos, alitas, salchipapas)
+                    const formattedPrice = product.price.toFixed(2);
+                    const waMessage = `Hola Bombonera CIX, quisiera pedir: ${product.name} (${BRAND_CONFIG.currency} ${formattedPrice}). ¿Me confirman disponibilidad?`;
+                    const waLink = `https://wa.me/${BRAND_CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
 
-                    <!-- CONTENIDO -->
-                    <div class="p-3 flex flex-col justify-between flex-1 lg:p-5">
-                        <div>
-                            <div class="flex justify-between items-start lg:block">
-                                <h3 class="font-bold text-slate-800 text-base leading-tight lg:text-lg mb-1">${product.name}</h3>
-                                <!-- Precio visible en móvil alineado derecha -->
-                                <span class="lg:hidden text-red-600 font-extrabold text-sm whitespace-nowrap bg-red-50 px-2 py-1 rounded-md">
+                    const cardHTML = `
+                    <article class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-row lg:flex-col lg:hover:shadow-lg transition-all fade-in">
+                        
+                        <!-- ICONO EMOJI -->
+                        <div class="relative centrado">
+                            <div class="product-image-mobile lg:w-full lg:h-56 flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50">
+                                <span class="text-6xl lg:text-8xl">${categoryIcons[categoryType]}</span>
+                            </div>
+                        </div>
+
+                        <!-- CONTENIDO -->
+                        <div class="p-3 flex flex-col justify-between flex-1 lg:p-5">
+                            <div>
+                                <div class="flex justify-between items-start lg:block">
+                                    <h3 class="font-bold text-slate-800 text-base leading-tight lg:text-lg mb-1">${product.name}</h3>
+                                    <span class="lg:hidden text-red-600 font-extrabold text-sm whitespace-nowrap bg-red-50 px-2 py-1 rounded-md">
+                                        ${BRAND_CONFIG.currency} ${formattedPrice}
+                                    </span>
+                                </div>
+                                
+                                <p class="text-xs text-slate-500 mt-1 line-clamp-2 lg:text-sm lg:mt-2 lg:line-clamp-3">
+                                    ${product.desc}
+                                </p>
+                            </div>
+
+                            <!-- ACCIONES -->
+                            <div class="mt-3 flex items-center justify-between lg:mt-4">
+                                <span class="hidden lg:block text-xl font-bold text-slate-800">
                                     ${BRAND_CONFIG.currency} ${formattedPrice}
                                 </span>
+
+                                <a href="${waLink}" target="_blank" 
+                                class="w-full lg:w-auto bg-red-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg text-center flex items-center justify-center gap-2 btn-hover shadow-red-200 shadow-lg hover:bg-red-700">
+                                    <span>PEDIR</span>
+                                    <i class="ph-bold ph-whatsapp-logo text-lg"></i>
+                                </a>
                             </div>
-                            
-                            <!-- Descripción: Line clamp para evitar textos muy largos en móvil -->
-                            <p class="text-xs text-slate-500 mt-1 line-clamp-2 lg:text-sm lg:mt-2 lg:line-clamp-3">
-                                ${product.desc}
-                            </p>
                         </div>
-
-                        <!-- ACCIONES -->
-                        <div class="mt-3 flex items-center justify-between lg:mt-4">
-                            <!-- Precio Desktop (Oculto en móvil) -->
-                            <span class="hidden lg:block text-xl font-bold text-slate-800">
-                                ${BRAND_CONFIG.currency} ${formattedPrice}
-                            </span>
-
-                            <!-- Botón PEDIR -->
-                            <a href="${waLink}" target="_blank" 
-                               class="w-full lg:w-auto bg-red-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg text-center flex items-center justify-center gap-2 btn-hover shadow-red-200 shadow-lg hover:bg-red-700">
-                                <span>PEDIR</span>
-                                <i class="ph-bold ph-whatsapp-logo text-lg"></i>
-                            </a>
-                        </div>
-                    </div>
-                </article>
-                `;
-                
-                container.innerHTML += cardHTML;
+                    </article>
+                    `;
+                    
+                    container.innerHTML += cardHTML;
+                });
             });
         }
 
