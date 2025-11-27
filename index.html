@@ -94,6 +94,42 @@
             background-color: #FEE2E2;
             color: #DC2626;
         }
+        /* Botones de navegación de tabs */
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            transition: all 0.2s;
+        }
+        .nav-button:hover {
+            background: #F8FAFC;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .nav-button.hidden {
+            display: none;
+        }
+        .nav-button-left {
+            left: 0;
+        }
+        .nav-button-right {
+            right: 0;
+        }
+        @media (min-width: 1024px) {
+            .nav-button {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="text-slate-800 pb-20">
@@ -126,9 +162,17 @@
         </div>
 
         <!-- TABS DE CATEGORÍAS -->
-        <div class="mb-6 overflow-x-auto">
-            <div id="category-tabs" class="flex gap-2 pb-2">
-                <!-- Los tabs se insertan aquí vía JavaScript -->
+        <div class="mb-6 relative">
+            <button id="nav-left" class="nav-button nav-button-left hidden" onclick="scrollTabs('left')">
+                <i class="ph-bold ph-caret-left text-slate-600"></i>
+            </button>
+            <button id="nav-right" class="nav-button nav-button-right" onclick="scrollTabs('right')">
+                <i class="ph-bold ph-caret-right text-slate-600"></i>
+            </button>
+            <div id="category-tabs-wrapper" class="overflow-x-auto">
+                <div id="category-tabs" class="flex gap-2 pb-2">
+                    <!-- Los tabs se insertan aquí vía JavaScript -->
+                </div>
             </div>
         </div>
 
@@ -422,10 +466,50 @@
         // LÓGICA DE RENDERIZADO
         // ==========================================
 
+        // Función para controlar scroll de tabs
+        function scrollTabs(direction) {
+            const wrapper = document.getElementById('category-tabs-wrapper');
+            const scrollAmount = 200;
+            
+            if (direction === 'left') {
+                wrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                wrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Actualizar visibilidad de botones de navegación
+        function updateNavButtons() {
+            const wrapper = document.getElementById('category-tabs-wrapper');
+            const navLeft = document.getElementById('nav-left');
+            const navRight = document.getElementById('nav-right');
+            
+            // Mostrar/ocultar botón izquierdo
+            if (wrapper.scrollLeft <= 0) {
+                navLeft.classList.add('hidden');
+            } else {
+                navLeft.classList.remove('hidden');
+            }
+            
+            // Mostrar/ocultar botón derecho
+            if (wrapper.scrollLeft + wrapper.clientWidth >= wrapper.scrollWidth - 5) {
+                navRight.classList.add('hidden');
+            } else {
+                navRight.classList.remove('hidden');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             renderHeader();
             renderCategoryTabs();
             renderProducts();
+            
+            // Agregar listener para scroll de tabs
+            const wrapper = document.getElementById('category-tabs-wrapper');
+            wrapper.addEventListener('scroll', updateNavButtons);
+            
+            // Verificar estado inicial
+            setTimeout(updateNavButtons, 100);
         });
 
         function renderHeader() {
